@@ -1,0 +1,3 @@
+include ':mytracker'
+include ':app'
+rootProject.name = "Login App"
