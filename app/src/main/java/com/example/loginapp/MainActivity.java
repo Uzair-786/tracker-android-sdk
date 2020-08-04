@@ -84,12 +84,10 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), SecondActivity.class));
         }
 
-
-
         alium = new Alium(mainActivity);
         tracker = new Tracker();
 
-        alium.init(this.getBaseContext());
+        alium.init(this.getBaseContext()); //sdk-Id, Client-ID
         tracker.onClickTracker(Name);
         tracker.onClickTracker(Password);
         tracker.onClickTracker(Info);
@@ -97,20 +95,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void validate(String userName, String userPassword) {
-
-        if ((userName.equals("Admin")) && (userPassword.equals("1234"))) {
-            Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-            startActivity(intent);
-        } else {
-            counter--;
-
-            Info.setText("No of attempts remaining: " + counter);
-
-            if (counter == 0) {
-                Login.setEnabled(false);
-            }
-        }
-    }
 }
