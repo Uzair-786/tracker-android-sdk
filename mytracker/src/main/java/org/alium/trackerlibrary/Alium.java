@@ -32,10 +32,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-//import com.androi
-
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,34 +42,31 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import org.json.JSONException;
+import org.alium.trackerlibrary.retrofit.AliumData;
+import org.alium.trackerlibrary.retrofit.RetrofitClient;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import okhttp3.Headers;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * @author UzairWani
@@ -85,28 +79,17 @@ import okhttp3.Response;
 public class Alium {
 
     private Context context;
-    private Activity activity ;// = (Activity)context;
+    private Activity activity ;
 
     public Alium (Activity context){
         this.activity = context;
     }
 
-
     private final static String ID_TAG = "ID";
-
     private static String uniqueID = null;
     private static final String PREF_UNIQUE_ID = "PREF_UNIQUE_ID";
-
     private Float[] geolocation;
-
     private FusedLocationProviderClient fusedLocationProviderClient;
-//    private LocationManager locationManager;
-//    private Location location;
-//    private LocationListener locationListenerGPS;
-//    private RequestQueue requestQueue;
-      private LocationRequest locationRequest;
-
-    private final OkHttpClient httpClient = new OkHttpClient();
 
     public Context setContextApp(Context context) {
        return this.context = context;
@@ -116,20 +99,19 @@ public class Alium {
         return context;
     }
 
-
     private String[] dim = new String [] {"", "button", "FCM Token", "×"}; //null;               //Element on which action is done.
     private String did = "";                 //device_id || android_id
     private String bvrs = "";                //build_version
     private String pth = "com.example.loginapp.MainActivity";//null;                 //screen/path/route
     private String scrnsz = "";              //screen_size
     private String orgs = "";                //operating_system
-    private Float[] gloc = new Float[]{77.22222222222f,77.62626262626f};             //geo_location       --------- Based on App Permissions
+    private Float[] gloc = new Float[]{};             //geo_location       --------- Based on App Permissions
     private String st = "";                  //state              --------- Based on App Permissions
     private String ct = "";                  //city               --------- Based on App Permissions
     private String ctry = "";                //country            --------- Based on App Permissions
     private String rgn = "";                 //region             --------- Based on App Permissions
     private String ntwp = "";                //network provider   --------- Based on App Permissions
-    private String ssn ="sd4xg5s-44f5-54edf-65d65" ;//null;                 //session
+    private String ssn = "sd4xg5s-44f5-54edf-65d65" ;//null;                 //session
     private String tsls = "01:50 pm";//null;    //time since last login/session
     private String aId = "";                 //app_id
     private String aitd = "";                 //app install date
@@ -209,7 +191,6 @@ public class Alium {
 
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("HardwareIds")
     public void getDeviceUniqueId(Context context) {
@@ -240,7 +221,6 @@ public class Alium {
                     Log.d(ID_TAG, "Android ID length: " + did.length());
                 } else {
 
-//                    Log.d(ID_TAG, "Device ID count is less than 16  or more than 40 : " + myID);
                     Log.d(ID_TAG, "Android ID length not less ---------: " + did.length());
                 }
                 Log.d(ID_TAG, "Android ID: " + did);
@@ -249,7 +229,6 @@ public class Alium {
             }
         }
     }
-
 
     public void getBuildVersion(Context context){
          try {
@@ -293,7 +272,6 @@ public class Alium {
                 Log.d(ID_TAG, "Build Version length not around 127 ---------: " +  versionName.length());
             }*/
     }
-
 
     public void getScreenSize(Context context) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -343,7 +321,6 @@ public class Alium {
         Log.d("Geo Location :","Locality/City ----------------------------:" +ct);
     }
 
-
     public void getCountry(String country){
         ctry = country;
          Log.d("Geo Location :"," Current Country ----------------------------:" +ctry);
@@ -364,14 +341,11 @@ public class Alium {
 
     }
 
-    ///////////////////////////-----------------------//////////////////
-
     public void getSession(String sessionId){
 
          ssn = sessionId;
         Log.d("Session : ","SessionId :"+ssn);
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     public void getApplicationId(Context context) {
@@ -379,17 +353,10 @@ public class Alium {
             PackageManager manager = context.getPackageManager();
             PackageInfo info = manager.getPackageInfo(context.getPackageName(), PackageManager.GET_ACTIVITIES);
             aId = String.valueOf(info.versionCode);
-//            aId = String.valueOf(context.getPackageManager()
-//                    .getPackageInfo(context.getPackageName(), 0).getLongVersionCode());
-            //BuildConfig.VERSION_NAME;
             Log.d(ID_TAG, "Build Version Codee: -------------------------------------------" + aId);
         }catch(Exception e){
             Log.d("Error Message","Error :"+e);
         }
-
-
-//        aId = String.valueOf(BuildConfig.VERSION_CODE) ;
-//        Log.d("Application Id:", aId);
 
     }
 
@@ -410,7 +377,6 @@ public class Alium {
         }
 
     }
-
 
     public void getIPAddress(Context context) {
 
@@ -450,7 +416,6 @@ public class Alium {
         }
     }
 
-
     public void getUserAgent(){
         ua = System.getProperty("http.agent");
         Log.d("Tag","User Agent---------------------- : "+ua);
@@ -469,13 +434,11 @@ public class Alium {
 
     }
 
-
-   public void getCurrentHostname(Context context)  {
+    public void getCurrentHostname(Context context)  {
 
    }
 
-
-   public void getTimeZone(){
+    public void getTimeZone(){
 
        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
        TimeZone zone = calendar.getTimeZone();
@@ -483,22 +446,14 @@ public class Alium {
 
        TimeZone tzs = TimeZone.getDefault();
        Integer tzz   = (int) System.currentTimeMillis();
-     //  Integer tzz   = (int)calendar.getTimeInMillis();
 
        tz = tzz;
-
-//       String gmt1=TimeZone.getTimeZone(tzs.getID()).getDisplayName(false,TimeZone.SHORT);
-//       String gmt2=TimeZone.getTimeZone(tzs.getID()).getDisplayName(false,TimeZone.LONG);
-
-//        tz = gmt1 +" "+timeZone;
-
-//       Log.d("Tag","TimeZone---------------------- : "+gmt1+"\t"+gmt2);
        Log.d("Tag","TimeZone---------------------- : "+tz);
 
    }
 
     @SuppressLint("MissingPermission")
-    private void getGeoLocation(Context contexts) {
+    public void getGeoLocation(Context contexts) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(contexts, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -520,7 +475,6 @@ public class Alium {
             fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    //Location location = task.getResult();
                     if (location != null) {
                         try {
 
@@ -531,12 +485,8 @@ public class Alium {
 
                             float latitude = Float.parseFloat(String.valueOf((address.get(0).getLatitude())));
                             float longitude = Float.parseFloat(String.valueOf((address.get(0).getLongitude())));
-//
-//                            float latitude = (float)(address.get(0).getLatitude());
-//                            float longitude = (float)(address.get(0).getLongitude());
 
                             Log.d("Geo Location :", "Longitude ----------: " + address.get(0).getLatitude()+" Longitude------------"+address.get(0).getLongitude());
-//                            Float longitude = (float)(address.get(0).getLongitude());
 
                             geolocation = new Float[]{latitude, longitude};
                             Log.d("Geo Location :", "Float ----------:" + geolocation[0]+"--------------"+geolocation[1]);
@@ -545,7 +495,7 @@ public class Alium {
                             getCity(address.get(0).getLocality());
                             getState(address.get(0).getAdminArea());
                             getRegion(address.get(0).getSubAdminArea());
-//                            getData();
+                            postData();
                             Log.d("Geo Location :", "Address ----------------------------:" + address.get(0).getAddressLine(0));
 
 
@@ -560,284 +510,7 @@ public class Alium {
 
     }
 
-    // Post Request For JSONObject
-    /*public void getData()  {
-        RequestQueue requestQueue = Volley.newRequestQueue(context.getApplicationContext());
-        JSONObject obj = new JSONObject();
-        String url = "https://mt8wslo0ml.execute-api.ap-south-1.amazonaws.com/default/logger-LoggerFunction-DF5DMWQXW20A";
-        try {
-            //input your API parameters
-            obj.put("dim",dim);
-            obj.put("did",did);
-            obj.put("bvrs",bvrs);
-            obj.put("pth",pth);
-            obj.put("scrnsz",scrnsz);
-            obj.put("st",st);
-            obj.put("ct",ct);
-            obj.put("ctry",ctry);
-            obj.put("rgn",rgn);
-            obj.put("ntwp",ntwp);
-            obj.put("session",ssn);
-            obj.put("tsls",tsls);
-            obj.put("aId",aId);
-            obj.put("aitd",aitd);
-            obj.put("hnm",hnm);
-            obj.put("uia",uia);
-            obj.put("vstid",vstid);
-            obj.put("ua",ua);
-            obj.put("cmp",cmp);
-            obj.put("tz",tz);
-            obj.put("event",evnt);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, obj,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                       //resultTextView.setText("String Response : "+ response.toString());
-                        Log.d("JSONObject  ","Inside getData ---- onResponseMethod---------2222222222---------:");
-                        Log.d("Response :","Response--------------------"+response.toString());
-                        Toast.makeText(context.getApplicationContext(), "I am OK !" + response.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-//                resultTextView.setText("Error getting response");
-                Log.d("JSONObject  ","Inside getData ---- onErrorResponse---------333333333333---------:"+error);
-                Toast.makeText(context.getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-
-            }
-        });
-        requestQueue.add(jsonObjectRequest);
-    }*/
-
-
-    // Get Request For JSONObject
-   /* public void getData() {
-
-        Log.d("JSONObject  ", "Inside getData Method------------------:");
-        final String url = "https://mt8wslo0ml.execute-api.ap-south-1.amazonaws.com/default/logger-LoggerFunction-DF5DMWQXW20A";
-
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    try {
-                        Log.d("JSONObject  ", "Inside getData Method---------111111---------:");
-                        RequestQueue requestQueue = Volley.newRequestQueue(context.getApplicationContext());
-                        //  String url = "https://drrdh6hfj6.execute-api.ap-south-1.amazonaws.com/Prod/log";//getResources().getString(R.string.url);
-
-                        JSONObject obj = new JSONObject();
-                        obj.put("dim", dim);
-                        obj.put("did", did);
-                        obj.put("bvrs", bvrs);
-                        obj.put("pth", pth);
-                        obj.put("scrnsz", scrnsz);
-                        obj.put("st", st);
-                        obj.put("ct", ct);
-                        obj.put("ctry", ctry);
-                        obj.put("rgn", rgn);
-                        obj.put("ntwp", ntwp);
-                        obj.put("session", ssn);
-                        obj.put("tsls", tsls);
-                        obj.put("aId", aId);
-                        obj.put("aitd", aitd);
-                        obj.put("hnm", hnm);
-                        obj.put("uia", uia);
-                        obj.put("vstid", vstid);
-                        obj.put("ua", ua);
-                        obj.put("cmp", cmp);
-                        obj.put("tz", tz);
-                        obj.put("event", evnt);
-
-
-                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-
-                                Log.d("JSONObject  ", "Inside getData ---- onResponseMethod---------2222222222---------:");
-                                Log.d("Response :", "Response--------------------" + response.toString());
-                                Toast.makeText(context.getApplicationContext(), "I am OK !" + response.toString(), Toast.LENGTH_LONG).show();
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.d("JSONObject  ", "Inside getData ---- onErrorResponse---------333333333333---------:" + error);
-                                Toast.makeText(context.getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-                            }
-
-                        });
-
-                        Log.d("JSONObject  ", "Inside getData  End's -------------4444444444---------:");
-                        requestQueue.add(jsonObjectRequest);
-                        Log.d("JSONObject  ", "Inside getData  End's ----------55555555555---------:" + requestQueue.add(jsonObjectRequest));
-
-                    } catch (Exception e) {
-                        Log.d("JSONObject  ", "Inside getData  End's ----------Error ---------:");
-                        e.printStackTrace();
-                        Log.d("JSONObject  ", "Inside getData  End's ----------Error ---------:" + e);
-                    }
-*//*
-                       JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
-                           @Override
-                           public void onResponse(JSONObject response) {
-
-                               Log.d("JSONObject  ", "Inside getData ---- onResponseMethod---------2222222222---------:");
-                               Log.d("Response :", "Response--------------------" + response.toString());
-                               Toast.makeText(context.getApplicationContext(), "I am OK !" + response.toString(), Toast.LENGTH_LONG).show();
-                           }
-                       }, new Response.ErrorListener() {
-                           @Override
-                           public void onErrorResponse(VolleyError error) {
-                               Log.d("JSONObject  ", "Inside getData ---- onErrorResponse---------333333333333---------:" + error);
-                               Toast.makeText(context.getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-                           }
-                       }) {
-
-                           *//**//**
-                     * Passing some request headers
-                     *//**//*
-                           @Override
-                           public Map<String, String> getHeaders() throws AuthFailureError {
-                               HashMap<String, String> headers = new HashMap<>();
-                               Log.d("JSONObject  ", "Inside getData ---- getHeaders---------44444444444444---------:");
-                               headers.put("Content-Type", "application/json");
-//                               headers.put("key", "Value");
-                               return headers;
-                           }
-                       };*//*
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }.start();
-    }
-*/
-
-
-
-   public void getData()  {
-
-       new Thread() {
-           @Override
-           public void run() {
-               try {
-                   //Your code goes here
-           // json formatted data
-           String json = "{" +
-                   "\"dim\": " + Arrays.toString(dim) + "," +
-                   "\"did\": " + did + "," +
-                   "\"bvrs\": " + bvrs + "," +
-                   "\"pth\": " + pth + "," +
-                   "\"scrnsz\": " + scrnsz + "," +
-                   "\"st\": " + st + "," +
-                   "\"ct\": " + ct + "," +
-                   "\"ctry\": " + ctry + "," +
-                   "\"rgn\": " + rgn + "," +
-                   "\"ntwp\": " + ntwp + "," +
-                   "\"ssn\": " + ssn + "," +
-                   "\"tsls\": " + tsls + "," +
-                   "\"aId\": " + aId + "," +
-                   "\"aitd\": " + aitd + "," +
-                   "\"hnm\": " + hnm + "," +
-                   "\"uia\": " + uia + "," +
-                   "\"vstid\": " + vstid + "," +
-                   "\"ua\": " + ua + "," +
-                   "\"cmp\": " + cmp + "," +
-                   "\"tz\": " + tz + "," +
-                   "\"evnt\": " + evnt + "," +
-                   "\"fcm\": " + fcm + "," +
-                   "}";
-
-           // json request body
-           RequestBody body = RequestBody.create(json,  MediaType.parse("application/json; charset=utf-8"));
-
-           Request request = new Request.Builder()
-                   .url("https://drrdh6hfj6.execute-api.ap-south-1.amazonaws.com/Prod/log")
-                   .addHeader("content-type", "application/json")
-//                   .addHeader("parameters",json)
-                   .post(body)
-                   .build();
-
-           try  {
-
-               Response response = httpClient.newCall(request).execute();
-               if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-               Headers responseHeaders = response.headers();
-               for (int i = 0; i < responseHeaders.size(); i++) {
-                   Log.d("Header Response","Response-----------" +responseHeaders.name(i) + ": " + responseHeaders.value(i));
-               }
-               // Get response body
-//               System.out.println(response.body().string());
-               Log.d("Error :", "Response  ---------------" +response.body());
-           }catch(Exception e){
-               Log.d("Error :", "Error ---------------" + e);
-           }
-
-               } catch (Exception e) {
-                   e.printStackTrace();
-               }
-           }
-       }.start();
-
-   }
-
-
-       /*OkHttpClient client = new OkHttpClient().newBuilder()
-               .build();
-       MediaType mediaType = MediaType.parse("application/json");
-       RequestBody body = RequestBody.create(mediaType, "{\r\n    \"bwsn\": \"Chrome\",\r\n    \"bwsr\": \"1080 X 1920\",\r\n    \"bwsvrs\": \"84.0.4147.105\",\r\n    \"cmp\": \"TCZ\",\r\n    \"ct\": \"\",\r\n    \"ctry\": \"\",\r\n    \"dim\": [\r\n        \"banner-btn-1\",\r\n        \"a\",\r\n        \"\",\r\n        \"Shop Now!\"\r\n    ],\r\n    \"evnt\": \"click\",\r\n    \"fcm\": \"e8KGOZ0BtZb0OqU0dC0VIv:APA91bGaRE2ejXLN3BeM7u90Hb9kLxWCxMgRM1tRhQmrxOKxT-1qhVF5miuqevuFztYABx7Uq_eDUyrXYNbzla97Q-Nda4uBsMvzVGOFZwUeYQ4TyS0sHkk_9leaYz266MkqHSSAZEHE\",\r\n    \"gloc\": [],\r\n    \"hnm\": \"https://dev-webpush.alium.co.in\",\r\n    \"ntwp\": \"\",\r\n    \"orgs\": \"Windows OS\",\r\n    \"pth\": \"/\",\r\n    \"rgn\": \"\",\r\n    \"ssn\": \"ea7ad33f-5dfc-4b2b-b6c9-d2a4c980f42a\",\r\n    \"st\": \"\",\r\n    \"tsls\": \"\",\r\n    \"tz\": 1596525338824,\r\n    \"ua\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36 Edg/84.0.522.52\"\r\n}");
-      try {
-          Request request = new Request.Builder()
-                  .url("https://mt8wslo0ml.execute-api.ap-south-1.amazonaws.com/default/logger-LoggerFunction-DF5DMWQXW20A")
-                  .method("POST", body)
-                  //    .addHeader("access-control-allow-credentials", " true")
-                  //   .addHeader("access-control-allow-headers", " Content-Type")
-                  .addHeader("content-type", "application/json")
-                  .build();
-          Response response = client.newCall(request).execute();
-          Log.d("Response :", "Response ---------------" + response);
-      }catch(Exception e){
-          Log.d("Error :", "Error ---------------" + e);
-      }*/
-
-
-
-
-        /*public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-
-        OkHttpClient client = new OkHttpClient();
-
-        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-        String post(String url, String json) throws IOException {
-            RequestBody body = RequestBody.create(json, JSON);
-            Request request = new Request.Builder()
-                    .url(url)
-                    .post(body)
-                    .build();
-            try (Response response = client.newCall(request).execute()) {
-                return response.body().string();
-            }
-        }
-
-        String bowlingJson(String player1, String player2) {
-            return "{'winCondition':'HIGH_SCORE',"
-                    + "'name':'Bowling',"
-                    + "'round':4,"
-                    + "'lastSaved':1367702411696,"
-                    + "'dateStarted':1367702378785,"
-                    + "'players':["
-                    + "{'name':'" + player1 + "','history':[10,8,6,7,8],'color':-13388315,'total':39},"
-                    + "{'name':'" + player2 + "','history':[6,10,5,10,10],'color':-48060,'total':41}"
-                    + "]}";
-        }*/
-
-
-    private void locationEnabled() {
+    public void locationEnabled() {
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         boolean gps_enabled = false;
         boolean network_enabled = false;
@@ -868,46 +541,46 @@ public class Alium {
         }
     }
 
+    public void postData() {
 
-  /*  void getLocation() {
-        try {
-            locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 500, 5, (LocationListener) this);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-    }*/
-/*
+    try {
 
-    public void onLocationChanged(Location location) {
+        AliumData aliumData = new AliumData(dim,did,bvrs,pth,scrnsz,orgs,gloc,st,ct,ctry,rgn,ntwp,ssn,tsls,aId,aitd,hnm,uia,ua,cmp,tz,evnt,fcm) ;
+        JSONObject json = aliumData.toJSON();
 
-        try {
+        Log.d("JSON ::", "Json Object ---------" + json);
 
-        Geocoder geocoder = new Geocoder(getContextApp().getApplicationContext(), Locale.getDefault());
-        List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+        HashMap<String, String> headerMap = new HashMap<String, String>();
+        headerMap.put("Content-Type", "application/json");
 
-        Log.d("Geo Location :","Latitude ----------------------------:" +address.get(0).getLatitude());
-        String latitude  = String.valueOf(address.get(0).getLatitude());
+        Call<ResponseBody> call = RetrofitClient
+                                    .getInstance()
+                                    .getApiPost()
+                                    .PostData(headerMap,json);
 
-        Log.d("Geo Location :","Longitude ----------------------------:" +address.get(0).getLongitude());
-        String longitude  = String.valueOf(address.get(0).getLongitude());
+                call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(!response.isSuccessful()){
+                        Log.d("Response ::", "Response is not Successfull ---------" + response);
+                    }else{
+                        Log.d("Response ::", "Success response---------" + response);
+                    }
 
-        geolocation = new String[]{latitude,longitude};
-        getGeoLocation(geolocation);
-        getCountry(address.get(0).getCountryName());
-        getCity(address.get(0).getLocality());
-        getState(address.get(0).getAdminArea());
-        getRegion(address.get(0).getSubAdminArea());
-        getData();
-        Log.d("Geo Location :","Address ----------------------------:" +address.get(0).getAddressLine(0));
+                }
 
-    } catch (Exception e) {
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    Log.d("Error ::", "Inside Throwable -------" + t);
+
+                }
+            });
+
+         }catch(Exception e){
+            Log.d("Error ::", "Inside Exception -------" + e);
+         }
     }
-    }
-*/
-
-
-
 }
 
 
