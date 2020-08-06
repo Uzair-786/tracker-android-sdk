@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * @author UzairWani
  *
@@ -38,6 +39,7 @@ public class Tracker {
                    String widgetName = view.getAccessibilityClassName().toString();
                    String[] className = widgetName.split("\\.");
                    Log.d(TAGS, "Widget Class Name : (v): (" + className[2] + ")");
+
 
                    return false;
                }

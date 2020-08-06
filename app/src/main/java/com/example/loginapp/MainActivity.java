@@ -18,14 +18,16 @@ import org.alium.trackerlibrary.Tracker;
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class MainActivity extends AppCompatActivity {
 
+    private TextView LoginPage;
     private EditText Name;
     private EditText Password;
     private TextView Info;
     private Button Login;
+    private Button Register;
 
     private int counter = 0;
 
-    private Tracker tracker ;
+//    private Tracker tracker ;
     private Alium alium ;
 
 
@@ -41,10 +43,12 @@ public class MainActivity extends AppCompatActivity {
 
         mainActivity = this;
 
+        LoginPage = findViewById(R.id.tvLoginPage);
         Name = (EditText) findViewById(R.id.etName);
         Password = (EditText) findViewById(R.id.etPassword);
         Info = (TextView) findViewById(R.id.tvInfo);
         Login = (Button) findViewById(R.id.btnLogin);
+        Register =findViewById(R.id.btnRegister);
 
         Info.setText("No of attempts remaining: 5");
         sessionManager = new SessionManager(getApplicationContext());
@@ -85,14 +89,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         alium = new Alium(mainActivity);
-        tracker = new Tracker();
-
+        alium.onClickTracker(LoginPage);
+        alium.onClickTracker(Name);
+        alium.onClickTracker(Password);
+        alium.onClickTracker(Info);
+        alium.onClickTracker(Login);
+        alium.onClickTracker(Register);
         alium.init(this.getBaseContext()); //sdk-Id, Client-ID
-        tracker.onClickTracker(Name);
-        tracker.onClickTracker(Password);
-        tracker.onClickTracker(Info);
-        tracker.onClickTracker(Login);
-
     }
 
 }

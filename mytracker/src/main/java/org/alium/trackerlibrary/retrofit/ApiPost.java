@@ -17,7 +17,7 @@ import retrofit2.http.POST;
 public interface ApiPost {
 
 //    @Headers("content-type: application/json")
-    @POST("default/logger-LoggerFunction-DF5DMWQXW20A/")
+    @POST("default/logger-LoggerFunction-DF5DMWQXW20A")
     Call<ResponseBody> PostData(@HeaderMap Map<String, String> headers, @Body JSONObject jsonObject);
 
 

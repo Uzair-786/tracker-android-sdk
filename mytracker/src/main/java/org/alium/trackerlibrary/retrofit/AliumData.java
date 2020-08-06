@@ -1,5 +1,8 @@
 package org.alium.trackerlibrary.retrofit;
 
+
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,13 +10,13 @@ import java.util.Arrays;
 
 public class AliumData {
 
-    private String[] dim = new String [] {"", "button", "FCM Token", "×"}; //null;               //Element on which action is done.
+    private JSONArray dim = new JSONArray();// [] {"", "button", "FCM Token", "×"}; //null;               //Element on which action is done.
     private String did = "";                 //device_id || android_id
     private String bvrs = "";                //build_version
     private String pth = "com.example.loginapp.MainActivity";//null;                 //screen/path/route
     private String scrnsz = "";              //screen_size
     private String orgs = "";                //operating_system
-    private Float[] gloc = new Float[]{};             //geo_location       --------- Based on App Permissions
+    private JSONArray gloc = new JSONArray();//new Float[]{};             //geo_location       --------- Based on App Permissions
     private String st = "";                  //state              --------- Based on App Permissions
     private String ct = "";                  //city               --------- Based on App Permissions
     private String ctry = "";                //country            --------- Based on App Permissions
@@ -22,13 +25,15 @@ public class AliumData {
     private String ssn ="sd4xg5s-44f5-54edf-65d65" ;//null;                 //session
     private String tsls = "01:50 pm";//null;    //time since last login/session
     private String aId = "";                 //app_id
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy'T'hh:mm:ss'Z'")
+//    @JSONField(format = "MM/dd/yyyy hh:mm:ss")
     private String aitd = "";                 //app install date
     private String hnm = "My Local Host"; //  null;                 //current_hostname
     private String uia = "";                 //user ip_address
     private static String vstid ;              //visitor id
     private String ua = "";                  //user_agent
     private String cmp = "";                 //company_name
-    private Integer tz = 0;                  //timezone
+    private Long tz = 0L;//(Timestamp) new Date();                  //timezone
     private String evnt = "click";//null;      //event_name
     private String fcm = "";                   //FCM token
 
@@ -36,7 +41,7 @@ public class AliumData {
 
     }
 
-    public AliumData(String[] dim, String did, String bvrs, String pth, String scrnsz, String orgs, Float[] gloc, String st, String ct, String ctry, String rgn, String ntwp, String ssn, String tsls, String aId, String aitd, String hnm, String uia, String ua, String cmp, Integer tz, String evnt, String fcm) {
+    public AliumData(JSONArray dim, String did, String bvrs, String pth, String scrnsz, String orgs, JSONArray gloc, String st, String ct, String ctry, String rgn, String ntwp, String ssn, String tsls, String aId, String aitd, String hnm, String uia, String ua, String cmp, Long tz, String evnt, String fcm) {
         this.dim = dim;
         this.did = did;
         this.bvrs = bvrs;
@@ -63,11 +68,11 @@ public class AliumData {
     }
 
 
-    public String[] getDim() {
+    public JSONArray getDim() {
         return dim;
     }
 
-    public void setDim(String[] dim) {
+    public void setDim(JSONArray dim) {
         this.dim = dim;
     }
 
@@ -111,11 +116,11 @@ public class AliumData {
         this.orgs = orgs;
     }
 
-    public Float[] getGloc() {
+    public JSONArray getGloc() {
         return gloc;
     }
 
-    public void setGloc(Float[] gloc) {
+    public void setGloc(JSONArray gloc) {
         this.gloc = gloc;
     }
 
@@ -231,11 +236,11 @@ public class AliumData {
         this.cmp = cmp;
     }
 
-    public Integer getTz() {
+    public Long getTz() {
         return tz;
     }
 
-    public void setTz(Integer tz) {
+    public void setTz(Long tz) {
         this.tz = tz;
     }
 
@@ -255,16 +260,17 @@ public class AliumData {
         this.fcm = fcm;
     }
 
+
   @Override
     public String toString() {
         return "AliumData{" +
-                "dim=" + Arrays.toString(dim) +
+                "dim=" + dim +
                 ", did='" + did + '\'' +
                 ", bvrs='" + bvrs + '\'' +
                 ", pth='" + pth + '\'' +
                 ", scrnsz='" + scrnsz + '\'' +
                 ", orgs='" + orgs + '\'' +
-                ", gloc=" + Arrays.toString(gloc) +
+                ", gloc=" + gloc +
                 ", st='" + st + '\'' +
                 ", ct='" + ct + '\'' +
                 ", ctry='" + ctry + '\'' +
@@ -283,6 +289,7 @@ public class AliumData {
                 ", fcm='" + fcm + '\'' +
                 '}';
     }
+
 
     public JSONObject toJSON() throws JSONException {
 

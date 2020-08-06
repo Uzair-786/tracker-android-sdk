@@ -15,7 +15,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.alium.trackerlibrary.Tracker;
+import org.alium.trackerlibrary.Alium;
 
 public class SecondActivity extends AppCompatActivity {
 
@@ -25,9 +25,10 @@ public class SecondActivity extends AppCompatActivity {
     private EditText editText;
     private RadioButton radioButtonMale;
     private RadioButton radioButtonFemale;
-    private Tracker tracker = new Tracker();
+    private Alium alium ;
 
     SessionManager sessionManager;
+    private SecondActivity secondActivity;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -41,6 +42,7 @@ public class SecondActivity extends AppCompatActivity {
         radioButtonMale = findViewById(R.id.radio_button_male);
         radioButtonFemale = findViewById(R.id.radio_button_female);
 
+        secondActivity = this;
         sessionManager = new SessionManager(getApplicationContext());
 
         String sUsername = sessionManager.getUsername();
@@ -81,12 +83,12 @@ public class SecondActivity extends AppCompatActivity {
             }
         });
 
-        tracker.onClickTracker(textView);
-        tracker.onClickTracker(btnLogout);
-        tracker.onClickTracker(textView2);
-        //  tracker.onClickTracker(editText);
-        tracker.onClickTracker(radioButtonMale);
-        tracker.onClickTracker(radioButtonFemale);
+        alium = new Alium(secondActivity);
+        alium.onClickTracker(textView);
+        alium.onClickTracker(btnLogout);
+        alium.onClickTracker(textView2);
+        alium.onClickTracker(radioButtonMale);
+        alium.onClickTracker(radioButtonFemale);
 
 
     }

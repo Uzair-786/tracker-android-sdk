@@ -22,6 +22,8 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -44,6 +46,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.alium.trackerlibrary.retrofit.AliumData;
 import org.alium.trackerlibrary.retrofit.RetrofitClient;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -53,11 +56,14 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -99,13 +105,17 @@ public class Alium {
         return context;
     }
 
-    private String[] dim = new String [] {"", "button", "FCM Token", "×"}; //null;               //Element on which action is done.
+    private static final String TAGS = "Trackers ";
+    int counter = 0;
+    static Map<String,Integer> map =new HashMap();
+
+    private ArrayList<String> dim = new ArrayList<>() ; //null;               //Element on which action is done. {"", "button", "FCM Token", "×"}
     private String did = "";                 //device_id || android_id
     private String bvrs = "";                //build_version
     private String pth = "com.example.loginapp.MainActivity";//null;                 //screen/path/route
     private String scrnsz = "";              //screen_size
     private String orgs = "";                //operating_system
-    private Float[] gloc = new Float[]{};             //geo_location       --------- Based on App Permissions
+    private Float[] gloc = new Float[2];             //geo_location       --------- Based on App Permissions
     private String st = "";                  //state              --------- Based on App Permissions
     private String ct = "";                  //city               --------- Based on App Permissions
     private String ctry = "";                //country            --------- Based on App Permissions
@@ -120,11 +130,71 @@ public class Alium {
     private static String vstid ;              //visitor id
     private String ua = "";                  //user_agent
     private String cmp = "";                 //company_name
-    private Integer tz = 0;                  //timezone
+    private Long tz = 0L;//= new Timestamp(date.getTime());  //timezone
     private String evnt = "click";//null;      //event_name
     private String fcm = "";                   //FCM token
 
 
+
+    ///////////// Tracker Method //////////////////
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void onClickTracker(View view) {
+        Log.d(TAGS, "Inside On ClickTracker()");
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+
+                    String viewName = view.getResources().getResourceEntryName(view.getId());
+                    Log.d(TAGS, "Item clicked :(name):(" + viewName + ")");
+
+                   // dim.add("");
+//                    dim.add(viewName);
+                    clickCounter(viewName,counter);
+
+                    String widgetName = view.getAccessibilityClassName().toString();
+                    String[] className = widgetName.split("\\.");
+                    Log.d(TAGS, "Widget Class Name : (v): (" + className[2] + ")");
+
+                    if(viewName.equals("btnLogin")){
+                        postData();
+                    }
+
+                    return false;
+                }
+
+                return false;
+            }
+        });
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void clickCounter(String viewName,Integer counter){
+
+        if(!map.containsKey(viewName)){
+            map.put(viewName,counter);
+        }
+
+        for(String key : map.keySet()){
+            if(viewName.equals(key)){
+                Integer count = map.get(viewName);
+                count++;
+                map.replace(viewName,count) ;
+                if(dim.size() <= 1) {
+                    dim.add(map.toString());
+                }else{
+                    dim.set(1,map.toString());
+                }
+                Log.d(ID_TAG, " Dim: -------------------------------------------" +dim);
+            }
+        }
+
+        Log.d(TAGS, "Map of Touched Items : (v): ("+map+")");
+
+    }
 
 
     @SuppressLint("NewApi")
@@ -166,7 +236,7 @@ public class Alium {
                              msg = "Send failed..!!";
                          }
 
-                       Toast.makeText(getContextApp(), msg, Toast.LENGTH_SHORT).show();
+                    //   Toast.makeText(getContextApp(), msg, Toast.LENGTH_SHORT).show();
                      }
          });
 
@@ -181,11 +251,12 @@ public class Alium {
 
                         // Get new Instance ID token
                        fcm = Objects.requireNonNull(task.getResult()).getToken();
+                       dim.add(fcm);
 
                         // Log and toast
                         //String msg = getString(R.string.msg_token_fmt, token);
                         Log.d("FCM Tag-----------", fcm);
-                        Toast.makeText(getContextApp(), fcm, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContextApp(), fcm, Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -235,6 +306,7 @@ public class Alium {
              bvrs = context.getPackageManager()
                      .getPackageInfo(context.getPackageName(), 0).versionName;
              //BuildConfig.VERSION_NAME;
+
              Log.d(ID_TAG, "Build Version length name: -------------------------------------------" + bvrs);
          }catch(Exception e){
              Log.d("Error Message","Error :"+e);
@@ -306,7 +378,9 @@ public class Alium {
 
     public void getGeoLocation(Float [] string){
 
-        gloc = string ;
+        gloc[0] = string[0] ;
+        gloc[1] = string[1];
+
         Log.d("Geo Location :","Latitude------------ :: "+ gloc[0] +" Longitude ------------ :: "+ gloc[1]);
 
     }
@@ -368,12 +442,13 @@ public class Alium {
         try {
             PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
             installTimeInMilliseconds = packageInfo.firstInstallTime;
-            aitd = MiscUtilities.getDate(installTimeInMilliseconds, "MM/dd/yyyy hh:mm:ss");
+            aitd = MiscUtilities.getDate(installTimeInMilliseconds, "dd-MM-yyyy HH:mm:ss");//"MM/dd/yyyy hh:mm:ss");
             Log.d("Date ","AppFirstInstalledDate---------------" + aitd);
         } catch (PackageManager.NameNotFoundException e) {
             // an error occurred, so display the Unix epoch
             installDate = new Date(0);
             aitd = installDate.toString();
+            Log.d("Date ","AppFirstInstalledDate---------------" + aitd);
         }
 
     }
@@ -440,14 +515,16 @@ public class Alium {
 
     public void getTimeZone(){
 
-       Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-       TimeZone zone = calendar.getTimeZone();
-       String timeZone = zone.getID();
+//       Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+//       TimeZone zone = calendar.getTimeZone();
+//       String timeZone = zone.getID();
 
        TimeZone tzs = TimeZone.getDefault();
-       Integer tzz   = (int) System.currentTimeMillis();
 
-       tz = tzz;
+      //  tz = new Timestamp(System.currentTimeMillis()) ;//System.currentTimeMillis();
+
+        tz =System.currentTimeMillis();
+//       tz = tzz;
        Log.d("Tag","TimeZone---------------------- : "+tz);
 
    }
@@ -489,15 +566,15 @@ public class Alium {
                             Log.d("Geo Location :", "Longitude ----------: " + address.get(0).getLatitude()+" Longitude------------"+address.get(0).getLongitude());
 
                             geolocation = new Float[]{latitude, longitude};
-                            Log.d("Geo Location :", "Float ----------:" + geolocation[0]+"--------------"+geolocation[1]);
+//                            Log.d("Geo Location :", "Float ----------:" + geolocation[0]+"--------------"+geolocation[1]);
                             getGeoLocation(geolocation);
                             getCountry(address.get(0).getCountryName());
                             getCity(address.get(0).getLocality());
                             getState(address.get(0).getAdminArea());
                             getRegion(address.get(0).getSubAdminArea());
-                            postData();
+//                            postData();
                             Log.d("Geo Location :", "Address ----------------------------:" + address.get(0).getAddressLine(0));
-
+//                            Log.d(ID_TAG, " Dim: -------------------------------------------" +dim);
 
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -545,7 +622,9 @@ public class Alium {
 
     try {
 
-        AliumData aliumData = new AliumData(dim,did,bvrs,pth,scrnsz,orgs,gloc,st,ct,ctry,rgn,ntwp,ssn,tsls,aId,aitd,hnm,uia,ua,cmp,tz,evnt,fcm) ;
+        JSONArray dimJsonArray = new JSONArray(dim);
+        JSONArray glocJsonArray = new JSONArray(gloc);
+        AliumData aliumData = new AliumData(dimJsonArray,did,bvrs,pth,scrnsz,orgs,glocJsonArray,st,ct,ctry,rgn,ntwp,ssn,tsls,aId,aitd,hnm,uia,ua,cmp,tz,evnt,fcm) ;
         JSONObject json = aliumData.toJSON();
 
         Log.d("JSON ::", "Json Object ---------" + json);
