@@ -150,15 +150,16 @@ public class Alium {
                     String viewName = view.getResources().getResourceEntryName(view.getId());
                     Log.d(TAGS, "Item clicked :(name):(" + viewName + ")");
 
-                   // dim.add("");
-//                    dim.add(viewName);
                     clickCounter(viewName,counter);
 
                     String widgetName = view.getAccessibilityClassName().toString();
                     String[] className = widgetName.split("\\.");
                     Log.d(TAGS, "Widget Class Name : (v): (" + className[2] + ")");
 
-                    if(viewName.equals("btnLogin")){
+                   /* if(viewName.equals("btnLogin")){
+                        postData();
+                    }*/
+                    if(className[2].equals("Button")){
                         postData();
                     }
 

@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     private Button Login;
     private Button Register;
 
-    private int counter = 0;
 
 //    private Tracker tracker ;
     private Alium alium ;
