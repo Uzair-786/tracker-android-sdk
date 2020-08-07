@@ -159,9 +159,9 @@ public class Alium {
                    /* if(viewName.equals("btnLogin")){
                         postData();
                     }*/
-                    if(className[2].equals("Button")){
+                   /* if(className[2].equals("Button")){
                         postData();
-                    }
+                    }*/
 
                     return false;
                 }
