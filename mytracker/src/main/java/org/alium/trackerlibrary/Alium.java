@@ -89,7 +89,7 @@ import retrofit2.Response;
  * on an integerated application
  */
 
-@RequiresApi(api = Build.VERSION_CODES.KITKAT)
+@SuppressLint("NewApi")
 public class Alium {
 
     private Context context;
@@ -156,7 +156,7 @@ public class Alium {
 
 
     ///////////// Tracker Method //////////////////
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     public void onClickTracker(View view) {
         Log.d(TAGS, "Inside On ClickTracker()");
         view.setOnTouchListener(new View.OnTouchListener() {
@@ -191,7 +191,6 @@ public class Alium {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void clickCounter(String viewName,Integer counter){
 
         if(!map.containsKey(viewName)){
@@ -216,9 +215,6 @@ public class Alium {
 
     }
 
-
-    @SuppressLint("NewApi")
-    @RequiresApi(api = Build.VERSION_CODES.O)
      public void init(Context context, Bundle bundleInstance){ //Http call (Client-Id,Sdk-Id)  // run all function on success or
          setContextApp(context);
 //         if (bundleInstance == null) {
@@ -289,7 +285,7 @@ public class Alium {
                 });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+//    @SuppressLint("NewApi")
     @SuppressLint("HardwareIds")
     public void getDeviceUniqueId(Context context) {
 
@@ -465,7 +461,6 @@ public class Alium {
         Log.d("Session : ","SessionId :"+ssn);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.P)
     public void getApplicationId(Context context) {
         try {
             PackageManager manager = context.getPackageManager();
@@ -563,13 +558,9 @@ public class Alium {
 //       Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 //       TimeZone zone = calendar.getTimeZone();
 //       String timeZone = zone.getID();
-
        TimeZone tzs = TimeZone.getDefault();
-
       //  tz = new Timestamp(System.currentTimeMillis()) ;//System.currentTimeMillis();
-
         tz =System.currentTimeMillis();
-//       tz = tzz;
        Log.d("Tag","TimeZone---------------------- : "+tz);
 
    }
