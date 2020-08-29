@@ -2,12 +2,16 @@ package org.alium.trackerlibrary.retrofit;
 
 
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
 
+@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class AliumData {
 
     private JSONArray dim = new JSONArray();// [] {"", "button", "FCM Token", "×"}; //null;               //Element on which action is done.
@@ -25,23 +29,22 @@ public class AliumData {
     private String ssn ="sd4xg5s-44f5-54edf-65d65" ;//null;                 //session
     private String tsls = "01:50 pm";//null;    //time since last login/session
     private String aId = "";                 //app_id
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy'T'hh:mm:ss'Z'")
-//    @JSONField(format = "MM/dd/yyyy hh:mm:ss")
     private String aitd = "";                 //app install date
     private String hnm = "My Local Host"; //  null;                 //current_hostname
     private String uia = "";                 //user ip_address
-    private static String vstid ;              //visitor id
+    private String vstid ;              //visitor id
     private String ua = "";                  //user_agent
     private String cmp = "";                 //company_name
     private Long tz = 0L;//(Timestamp) new Date();                  //timezone
     private String evnt = "click";//null;      //event_name
     private String fcm = "";                   //FCM token
+    private String platform = "Android";
 
     public AliumData(){
 
     }
 
-    public AliumData(JSONArray dim, String did, String bvrs, String pth, String scrnsz, String orgs, JSONArray gloc, String st, String ct, String ctry, String rgn, String ntwp, String ssn, String tsls, String aId, String aitd, String hnm, String uia, String ua, String cmp, Long tz, String evnt, String fcm) {
+    public AliumData(JSONArray dim, String did, String bvrs, String pth, String scrnsz, String orgs, JSONArray gloc, String st, String ct, String ctry, String rgn, String ntwp, String ssn, String tsls, String aId, String aitd, String hnm, String uia,String vstid, String ua, String cmp, Long tz, String evnt, String fcm, String platform) {
         this.dim = dim;
         this.did = did;
         this.bvrs = bvrs;
@@ -60,11 +63,13 @@ public class AliumData {
         this.aitd = aitd;
         this.hnm = hnm;
         this.uia = uia;
+        this.vstid=vstid;
         this.ua = ua;
         this.cmp = cmp;
         this.tz = tz;
         this.evnt = evnt;
         this.fcm = fcm;
+        this.platform = platform;
     }
 
 
@@ -212,12 +217,12 @@ public class AliumData {
         this.uia = uia;
     }
 
-    public static String getVstid() {
+    public  String getVstid() {
         return vstid;
     }
 
-    public static void setVstid(String vstid) {
-        AliumData.vstid = vstid;
+    public void setVstid(String vstid) {
+        this.vstid = vstid;
     }
 
     public String getUa() {
@@ -260,6 +265,15 @@ public class AliumData {
         this.fcm = fcm;
     }
 
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
+
 
   @Override
     public String toString() {
@@ -282,14 +296,17 @@ public class AliumData {
                 ", aitd='" + aitd + '\'' +
                 ", hnm='" + hnm + '\'' +
                 ", uia='" + uia + '\'' +
+                ", vstid='" + vstid + '\'' +
                 ", ua='" + ua + '\'' +
                 ", cmp='" + cmp + '\'' +
                 ", tz=" + tz +
                 ", evnt='" + evnt + '\'' +
                 ", fcm='" + fcm + '\'' +
+                ", platform='" + platform + '\'' +
                 '}';
     }
 
+   // Alium alium = new Alium();
 
     public JSONObject toJSON() throws JSONException {
 
@@ -318,6 +335,7 @@ public class AliumData {
         obj.put("tz", tz);
         obj.put("event", evnt);
         obj.put("fcm", fcm);
+        obj.put("platform", platform);
         return obj;
     }
 }

@@ -5,19 +5,24 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
@@ -25,12 +30,15 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -85,10 +93,20 @@ import retrofit2.Response;
 public class Alium {
 
     private Context context;
-    private Activity activity ;
+    public Activity activity ;
+
+    private static final String EXTRA_PATH = "pth";
+
+    public Alium() {
+    }
 
     public Alium (Activity context){
         this.activity = context;
+//        this.activityClass = context.getClass();
+    }
+
+    public Activity getActivityClass(){
+        return activity;
     }
 
     private final static String ID_TAG = "ID";
@@ -109,30 +127,31 @@ public class Alium {
     int counter = 0;
     static Map<String,Integer> map =new HashMap();
 
-    private ArrayList<String> dim = new ArrayList<>() ; //null;               //Element on which action is done. {"", "button", "FCM Token", "×"}
-    private String did = "";                 //device_id || android_id
-    private String bvrs = "";                //build_version
-    private String pth = "com.example.loginapp.MainActivity";//null;                 //screen/path/route
-    private String scrnsz = "";              //screen_size
-    private String orgs = "";                //operating_system
-    private Float[] gloc = new Float[2];             //geo_location       --------- Based on App Permissions
-    private String st = "";                  //state              --------- Based on App Permissions
-    private String ct = "";                  //city               --------- Based on App Permissions
-    private String ctry = "";                //country            --------- Based on App Permissions
-    private String rgn = "";                 //region             --------- Based on App Permissions
-    private String ntwp = "";                //network provider   --------- Based on App Permissions
-    private String ssn = "sd4xg5s-44f5-54edf-65d65" ;//null;                 //session
-    private String tsls = "01:50 pm";//null;    //time since last login/session
-    private String aId = "";                 //app_id
-    private String aitd = "";                 //app install date
-    private String hnm = "My Local Host"; //  null;                 //current_hostname
-    private String uia = "";                 //user ip_address
-    private static String vstid ;              //visitor id
-    private String ua = "";                  //user_agent
-    private String cmp = "";                 //company_name
-    private Long tz = 0L;//= new Timestamp(date.getTime());  //timezone
-    private String evnt = "click";//null;      //event_name
-    private String fcm = "";                   //FCM token
+    private ArrayList<String> dim = new ArrayList<>() ;               //Element on which action is done. {"", "button", "FCM Token", "×"}
+    private String did = "";                                          //device_id || android_id
+    private String bvrs = "";                                         //build_version
+    private String pth = ""; //"com.example.loginapp.MainActivity";         //screen/path/route
+    private String scrnsz = "";                                       //screen_size
+    private String orgs = "";                                         //operating_system
+    private Float[] gloc = new Float[2];                              //geo_location       --------- Based on App Permissions
+    private String st = "";                                           //state              --------- Based on App Permissions
+    private String ct = "";                                           //city               --------- Based on App Permissions
+    private String ctry = "";                                         //country            --------- Based on App Permissions
+    private String rgn = "";                                          //region             --------- Based on App Permissions
+    private String ntwp = "";                                         //network provider   --------- Based on App Permissions
+    private String ssn = "sd4xg5s-44f5-54edf-65d65" ;                 //session
+    private String tsls = "01:50 pm";                                 //time since last login/session
+    private String aId = "";                                          //app_id
+    private String aitd = "";                                         //app install date
+    private String hnm = "My Local Host";                             //current_hostname
+    private String uia = "";                                          //user ip_address
+    private String vstid="" ;                                         //visitor id
+    private String ua = "";                                           //user_agent
+    private String cmp = "";                                          //company_name
+    private Long tz = 0L;                                             //timezone
+    private String evnt = "click";                                    //event_name
+    private String fcm = "";                                          //FCM token
+    private String platform = "Android";                              //Default Lead Message always -> "Android"
 
 
 
@@ -156,7 +175,7 @@ public class Alium {
                     String[] className = widgetName.split("\\.");
                     Log.d(TAGS, "Widget Class Name : (v): (" + className[2] + ")");
 
-                   /* if(viewName.equals("btnLogin")){
+                    /*if(viewName.equals("btnLogin")){
                         postData();
                     }*/
                    /* if(className[2].equals("Button")){
@@ -184,10 +203,10 @@ public class Alium {
                 Integer count = map.get(viewName);
                 count++;
                 map.replace(viewName,count) ;
-                if(dim.size() <= 1) {
+                if(dim.size() < 1) {
                     dim.add(map.toString());
                 }else{
-                    dim.set(1,map.toString());
+                    dim.set(0,map.toString());
                 }
                 Log.d(ID_TAG, " Dim: -------------------------------------------" +dim);
             }
@@ -200,8 +219,14 @@ public class Alium {
 
     @SuppressLint("NewApi")
     @RequiresApi(api = Build.VERSION_CODES.O)
-     public void init(Context context){ //Http call (Client-Id,Sdk-Id)  // run all function on success or
+     public void init(Context context, Bundle bundleInstance){ //Http call (Client-Id,Sdk-Id)  // run all function on success or
          setContextApp(context);
+//         if (bundleInstance == null) {
+//            pth =
+            getPath();
+      /*  } else {
+            pth = bundleInstance.getString(EXTRA_PATH, "");
+        }*/
          getDeviceUniqueId(context);
          getBuildVersion(context);
          getIPAddress(context);
@@ -219,6 +244,8 @@ public class Alium {
 //         getData();
 
          ///////////////////////------------------FIREBASE CODE--------------/////////////////////////////////////////
+        startPowerSaverIntent(context);
+//        turnOffDozeMode(context);
          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
              NotificationChannel channel =
@@ -252,7 +279,7 @@ public class Alium {
 
                         // Get new Instance ID token
                        fcm = Objects.requireNonNull(task.getResult()).getToken();
-                       dim.add(fcm);
+//                       dim.add(fcm);
 
                         // Log and toast
                         //String msg = getString(R.string.msg_token_fmt, token);
@@ -260,7 +287,6 @@ public class Alium {
 //                        Toast.makeText(getContextApp(), fcm, Toast.LENGTH_SHORT).show();
                     }
                 });
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -345,6 +371,23 @@ public class Alium {
                 Log.d(ID_TAG, "Build Version length not around 127 ---------: " +  versionName.length());
             }*/
     }
+
+    public String getPath() {
+        try {
+            if (pth == null || pth.isEmpty()) {
+                pth = activity.getIntent().getStringExtra(EXTRA_PATH);
+                pth = pth == null ? ("") : (pth += "/");
+                pth += activity.getClass();
+                String[] splited = pth.split("\\s+");
+                pth = splited[1];
+                Log.d("Path  :: ","This is the activity path ------"+pth);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return pth;
+    }
+
 
     public void getScreenSize(Context context) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -472,11 +515,12 @@ public class Alium {
 
     }
 
-    public synchronized static void getVisitorID(Context context) {
+    public void getVisitorID(Context context) {
         if (uniqueID == null) {
             SharedPreferences sharedPrefs = context.getSharedPreferences(
                     PREF_UNIQUE_ID, Context.MODE_PRIVATE);
             uniqueID = sharedPrefs.getString(PREF_UNIQUE_ID, null);
+            vstid = uniqueID;
 
             Log.d("Visitor_Id :", "Generated Visitor_Id -------------: ( " + uniqueID + " )"  );
             if (uniqueID == null) {
@@ -558,8 +602,7 @@ public class Alium {
 
                             Geocoder geocoder = new Geocoder(getContextApp().getApplicationContext(), Locale.getDefault());
                             List<Address> address = geocoder.getFromLocation(
-                                    location.getLatitude(), location.getLongitude(), 1
-                            );
+                                    location.getLatitude(), location.getLongitude(), 1);
 
                             float latitude = Float.parseFloat(String.valueOf((address.get(0).getLatitude())));
                             float longitude = Float.parseFloat(String.valueOf((address.get(0).getLongitude())));
@@ -625,12 +668,12 @@ public class Alium {
 
         JSONArray dimJsonArray = new JSONArray(dim);
         JSONArray glocJsonArray = new JSONArray(gloc);
-        AliumData aliumData = new AliumData(dimJsonArray,did,bvrs,pth,scrnsz,orgs,glocJsonArray,st,ct,ctry,rgn,ntwp,ssn,tsls,aId,aitd,hnm,uia,ua,cmp,tz,evnt,fcm) ;
+        AliumData aliumData = new AliumData(dimJsonArray,did,bvrs,pth,scrnsz,orgs,glocJsonArray,st,ct,ctry,rgn,ntwp,ssn,tsls,aId,aitd,hnm,uia,vstid,ua,cmp,tz,evnt,fcm,platform) ;
         JSONObject json = aliumData.toJSON();
 
         Log.d("JSON ::", "Json Object ---------" + json);
 
-        HashMap<String, String> headerMap = new HashMap<String, String>();
+        HashMap<String, String> headerMap = new HashMap<>();
         headerMap.put("Content-Type", "application/json");
 
         Call<ResponseBody> call = RetrofitClient
@@ -642,7 +685,7 @@ public class Alium {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if(!response.isSuccessful()){
-                        Log.d("Response ::", "Response is not Successfull ---------" + response);
+                        Log.d("Response ::", "Response is not Successful ---------" + response);
                     }else{
                         Log.d("Response ::", "Success response---------" + response);
                     }
@@ -661,7 +704,106 @@ public class Alium {
             Log.d("Error ::", "Inside Exception -------" + e);
          }
     }
+
+    /*public void turnOffDozeMode(Context context){  //you can use with or without passing context
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Intent intent = new Intent();
+            String packageName = context.getPackageName();
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            if (pm.isIgnoringBatteryOptimizations(packageName)) // if you want to desable doze mode for this package
+                intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+            else { // if you want to enable doze mode
+                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setData(Uri.parse("package:" + packageName));
+            }
+            context.startActivity(intent);
+        }
+
+    }*/
+
+    public void startPowerSaverIntent(final Context context) {
+        SharedPreferences settings = context.getSharedPreferences("ProtectedApps", Context.MODE_PRIVATE);
+        boolean skipMessage = settings.getBoolean("skipProtectedAppCheck", false);
+        if (!skipMessage) {
+            final SharedPreferences.Editor editor = settings.edit();
+            boolean foundCorrectIntent = false;
+            for (final Intent intent : Constants.POWERMANAGER_INTENTS) {
+                if (isCallable(context, intent)) {
+                    foundCorrectIntent = true;
+                    final AppCompatCheckBox dontShowAgain = new AppCompatCheckBox(activity.getApplicationContext());
+                    dontShowAgain.setText("Do not show again");
+                    dontShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            editor.putBoolean("skipProtectedAppCheck", isChecked);
+                            editor.apply();
+                        }
+                    });
+
+                    final CharSequence[] charSequence = new CharSequence[] {"Do not show again"};
+                    String[] items = {"Do not show again"};
+                    boolean[] checkedItems = {false};
+//                    final boolean isChecked =false;
+                     new AlertDialog.Builder(activity)
+                            .setTitle("Enable "+context.getPackageManager().getApplicationLabel(context.getApplicationInfo())+" notifications always")
+//                            .setMessage("Requires to enable App in the background")
+//                            .setView(dontShowAgain)
+                             .setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                                 @Override
+                                 public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                                     editor.putBoolean("skipProtectedAppCheck", b);
+                                     editor.apply();
+                                 }
+
+                             })
+                         /*   .setSingleChoiceItems(charSequence, 0, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    editor.putBoolean("skipProtectedAppCheck", isChecked);
+                                    editor.apply();
+                                }
+                            })*/
+                            .setCancelable(false)
+                            .setPositiveButton("Enable", new
+                                    DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                            activity.startActivity(intent);
+                                        }
+                                    })
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .show();
+
+/*
+                    new AlertDialog.Builder(context)
+                            .setTitle(Build.MANUFACTURER + " Protected Apps")
+                            .setMessage(String.format("%s requires to be enabled in 'Protected Apps' to function properly.%n", context.getString(R.string.project_id)))
+                            .setView(dontShowAgain)
+                            .setPositiveButton("Go to settings", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getContextApp().startActivity(intent);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .show();*/
+                    break;
+                }
+            }
+            if (!foundCorrectIntent) {
+                editor.putBoolean("skipProtectedAppCheck", true);
+                editor.apply();
+            }
+        }
+    }
+
+    private static boolean isCallable(Context context, Intent intent) {
+        List<ResolveInfo> list = context.getPackageManager().queryIntentActivities(intent,
+                PackageManager.MATCH_DEFAULT_ONLY);
+        return list.size() > 0;
+    }
 }
+
+
 
 
 

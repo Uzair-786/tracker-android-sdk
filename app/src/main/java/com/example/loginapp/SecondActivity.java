@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.alium.trackerlibrary.Alium;
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class SecondActivity extends AppCompatActivity {
 
     private TextView textView;
@@ -30,7 +31,7 @@ public class SecondActivity extends AppCompatActivity {
     SessionManager sessionManager;
     private SecondActivity secondActivity;
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +90,7 @@ public class SecondActivity extends AppCompatActivity {
         alium.onClickTracker(textView2);
         alium.onClickTracker(radioButtonMale);
         alium.onClickTracker(radioButtonFemale);
+        alium.init(this.getBaseContext(), savedInstanceState);
 
 
     }

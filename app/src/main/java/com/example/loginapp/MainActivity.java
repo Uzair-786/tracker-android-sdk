@@ -43,10 +43,10 @@ public class MainActivity extends AppCompatActivity {
         mainActivity = this;
 
         LoginPage = findViewById(R.id.tvLoginPage);
-        Name = (EditText) findViewById(R.id.etName);
-        Password = (EditText) findViewById(R.id.etPassword);
-        Info = (TextView) findViewById(R.id.tvInfo);
-        Login = (Button) findViewById(R.id.btnLogin);
+        Name =  findViewById(R.id.etName);
+        Password =  findViewById(R.id.etPassword);
+        Info =  findViewById(R.id.tvInfo);
+        Login =  findViewById(R.id.btnLogin);
         Register =findViewById(R.id.btnRegister);
 
         Info.setText("No of attempts remaining: 5");
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         alium.onClickTracker(Info);
         alium.onClickTracker(Login);
         alium.onClickTracker(Register);
-        alium.init(this.getBaseContext()); //sdk-Id, Client-ID
+        alium.init(this.getBaseContext(), savedInstanceState); //sdk-Id, Client-ID
     }
 
 }

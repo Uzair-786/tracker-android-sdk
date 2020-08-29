@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.NETWORK_STATE" />
+    <uses-permission
+        android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <application
         android:allowBackup="true"
@@ -19,19 +21,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+                  android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <service android:name="org.alium.trackerlibrary.MessagingService">
+        <service android:name="org.alium.trackerlibrary.MessagingService"
+            android:exported="false"
+            android:directBootAware="true"
+            tools:targetApi="n">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
-        <activity android:name=".SecondActivity"></activity>
+        <activity android:name=".SecondActivity" />
     </application>
 
 
