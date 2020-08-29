@@ -3,7 +3,6 @@ package com.example.loginapp;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,13 +10,12 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import org.alium.trackerlibrary.Alium;
 
-@RequiresApi(api = Build.VERSION_CODES.M)
+
 public class SecondActivity extends AppCompatActivity {
 
     private TextView textView;
@@ -31,7 +29,7 @@ public class SecondActivity extends AppCompatActivity {
     SessionManager sessionManager;
     private SecondActivity secondActivity;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +88,7 @@ public class SecondActivity extends AppCompatActivity {
         alium.onClickTracker(textView2);
         alium.onClickTracker(radioButtonMale);
         alium.onClickTracker(radioButtonFemale);
-        alium.init(this.getBaseContext(), savedInstanceState);
+        alium.init(this);
 
 
     }

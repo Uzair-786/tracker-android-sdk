@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.alium.trackerlibrary.Alium;
 import org.alium.trackerlibrary.Tracker;
 
-@RequiresApi(api = Build.VERSION_CODES.M)
+
 public class MainActivity extends AppCompatActivity {
 
     private TextView LoginPage;
@@ -25,22 +25,15 @@ public class MainActivity extends AppCompatActivity {
     private Button Login;
     private Button Register;
 
-
-//    private Tracker tracker ;
     private Alium alium ;
 
-
     SessionManager sessionManager;
-    private MainActivity mainActivity;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mainActivity = this;
 
         LoginPage = findViewById(R.id.tvLoginPage);
         Name =  findViewById(R.id.etName);
@@ -87,14 +80,14 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), SecondActivity.class));
         }
 
-        alium = new Alium(mainActivity);
+        alium = new Alium(this);
         alium.onClickTracker(LoginPage);
         alium.onClickTracker(Name);
         alium.onClickTracker(Password);
         alium.onClickTracker(Info);
         alium.onClickTracker(Login);
         alium.onClickTracker(Register);
-        alium.init(this.getBaseContext(), savedInstanceState); //sdk-Id, Client-ID
+        alium.init(this); //sdk-Id, Client-ID
     }
 
 }

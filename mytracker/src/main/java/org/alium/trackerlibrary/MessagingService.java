@@ -1,14 +1,9 @@
 package org.alium.trackerlibrary;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.os.Build;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+
+import android.app.Notification;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -22,12 +17,11 @@ import java.util.Objects;
  * This is a firebase Messaging service
  */
 
-@RequiresApi(api = Build.VERSION_CODES.KITKAT)
-@SuppressLint("MissingFirebaseInstanceTokenRefresh")
+@SuppressLint({"MissingFirebaseInstanceTokenRefresh","NewApi"})
 public class MessagingService extends FirebaseMessagingService {
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
@@ -42,7 +36,6 @@ public class MessagingService extends FirebaseMessagingService {
                 .setContentTitle(title)
                 .setContentText(remoteMessage)
                 .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .build();
 
         NotificationManagerCompat manager = NotificationManagerCompat.from(this);

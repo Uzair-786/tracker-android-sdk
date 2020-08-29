@@ -215,14 +215,9 @@ public class Alium {
 
     }
 
-     public void init(Context context, Bundle bundleInstance){ //Http call (Client-Id,Sdk-Id)  // run all function on success or
+     public void init(Context context){  //Http call (Client-Id,Sdk-Id)  // run all function on success or
          setContextApp(context);
-//         if (bundleInstance == null) {
-//            pth =
-            getPath();
-      /*  } else {
-            pth = bundleInstance.getString(EXTRA_PATH, "");
-        }*/
+         getPath();
          getDeviceUniqueId(context);
          getBuildVersion(context);
          getIPAddress(context);
@@ -237,7 +232,6 @@ public class Alium {
          getVisitorID(context);
          getNetworkProvider(context);
          getGeoLocation(context);
-//         getData();
 
          ///////////////////////------------------FIREBASE CODE--------------/////////////////////////////////////////
         startPowerSaverIntent(context);
