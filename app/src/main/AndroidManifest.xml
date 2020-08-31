@@ -29,14 +29,14 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <service android:name="org.alium.trackerlibrary.MessagingService"
+       <!-- <service android:name="org.alium.trackerlibrary.MessagingService"
             android:exported="false"
             android:directBootAware="true"
             tools:targetApi="n">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
-        </service>
+        </service>-->
 
         <activity android:name=".SecondActivity" />
     </application>

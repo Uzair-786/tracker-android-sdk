@@ -3,6 +3,7 @@ package org.alium.trackerlibrary;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
@@ -90,7 +91,7 @@ import retrofit2.Response;
  */
 
 @SuppressLint("NewApi")
-public class Alium {
+public class Alium extends Application {
 
     private Context context;
     public Activity activity ;

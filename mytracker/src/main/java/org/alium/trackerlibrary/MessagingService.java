@@ -19,9 +19,11 @@ import java.util.Objects;
  * This is a firebase Messaging service
  */
 
-@SuppressLint({"MissingFirebaseInstanceTokenRefresh","NewApi"})
+
+@SuppressLint("MissingFirebaseInstanceTokenRefresh")
 public class MessagingService extends FirebaseMessagingService {
 
+    @SuppressLint("NewApi")
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.d("MessagingService","Inside onMessageReceived ----------");
