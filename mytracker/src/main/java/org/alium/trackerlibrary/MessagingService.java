@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 
 import android.app.Notification;
+import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -20,26 +22,30 @@ import java.util.Objects;
 @SuppressLint({"MissingFirebaseInstanceTokenRefresh","NewApi"})
 public class MessagingService extends FirebaseMessagingService {
 
-
-
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
+        Log.d("MessagingService","Inside onMessageReceived ----------");
         super.onMessageReceived(remoteMessage);
+        Log.d("MessagingService","Inside onMessageReceived -----111111111111111-----");
         showNotification(Objects.requireNonNull(remoteMessage.getNotification()).getTitle(),remoteMessage.getNotification().getBody());
+        Log.d("MessagingService","Inside onMessageReceived -----222222222222222-----");
 
     }
 
     public void showNotification(String title, String remoteMessage) {
-
+        Log.d("MessagingService","Inside showNotification -----1111111111111-----");
         Notification notification = new NotificationCompat.Builder(this.getApplicationContext(),"MyNotifications")
                 .setSmallIcon(R.drawable.common_full_open_on_phone)
                 .setContentTitle(title)
                 .setContentText(remoteMessage)
                 .setAutoCancel(true)
                 .build();
+        Log.d("MessagingService","Inside showNotification -----2222222222222-----");
 
         NotificationManagerCompat manager = NotificationManagerCompat.from(this);
+        Log.d("MessagingService","Inside showNotification -----3333333333333-----");
         manager.notify(999,notification);
+        Log.d("MessagingService","Inside showNotification -----4444444444444-----");
     }
 
 }

@@ -175,9 +175,9 @@ public class Alium {
                     String[] className = widgetName.split("\\.");
                     Log.d(TAGS, "Widget Class Name : (v): (" + className[2] + ")");
 
-                    /*if(viewName.equals("btnLogin")){
+                    if(viewName.equals("btnLogin")){
                         postData();
-                    }*/
+                    }
                    /* if(className[2].equals("Button")){
                         postData();
                     }*/
@@ -216,42 +216,63 @@ public class Alium {
     }
 
      public void init(Context context){  //Http call (Client-Id,Sdk-Id)  // run all function on success or
+         Log.d("Alium","Inside init ----------");
          setContextApp(context);
+         Log.d("Alium","Inside init -----1111111111-----");
          getPath();
+         Log.d("Alium","Inside init -----2222222222-----");
          getDeviceUniqueId(context);
+         Log.d("Alium","Inside init -----3333333333-----");
          getBuildVersion(context);
+         Log.d("Alium","Inside init -----4444444444-----");
          getIPAddress(context);
+         Log.d("Alium","Inside init -----5555555555-----");
          getCompanyName();
+         Log.d("Alium","Inside init -----666666666-----");
          getOSName();
+         Log.d("Alium","Inside init -----777777777-----");
          getApplicationId(context);
+         Log.d("Alium","Inside init -----888888888-----");
          getAppFirstInstalledDate(context);
+         Log.d("Alium","Inside init -----999999999-----");
 //       alium.getCurrentHostname(this.getApplicationContext());
          getTimeZone();
+         Log.d("Alium","Inside init -----10-10-10-10--");
          getUserAgent();
+         Log.d("Alium","Inside init -----11-11-11-11--");
          getScreenSize(context);
+         Log.d("Alium","Inside init ------12-12-12-12-");
          getVisitorID(context);
+         Log.d("Alium","Inside init ------13-13-13-13-");
          getNetworkProvider(context);
+         Log.d("Alium","Inside init -----14-14-14-14--");
          getGeoLocation(context);
-
+         Log.d("Alium","Inside init -----15-15-15-15--");
          ///////////////////////------------------FIREBASE CODE--------------/////////////////////////////////////////
         startPowerSaverIntent(context);
+         Log.d("Alium","Inside init [FIREBASE CODE]----------");
 //        turnOffDozeMode(context);
-         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+             Log.d("Alium","Inside init [FIREBASE CODE]-----111111111-----");
              NotificationChannel channel =
                      new NotificationChannel("MyNotifications", "MyNotification", NotificationManager.IMPORTANCE_DEFAULT);
-
+             Log.d("Alium","Inside init [FIREBASE CODE]-----22222222-----");
              NotificationManager manager = getContextApp().getSystemService(NotificationManager.class);
+             Log.d("Alium","Inside init [FIREBASE CODE]------3333333----");
              manager.createNotificationChannel(channel);
+             Log.d("Alium","Inside init [FIREBASE CODE]------44444444----");
          }
 
          FirebaseMessaging.getInstance().subscribeToTopic("general")
                  .addOnCompleteListener(new OnCompleteListener<Void>() {
                      @Override
                      public void onComplete(@NonNull Task<Void> task) {
+                         Log.d("Alium","Inside init [FIREBASE CODE]-----5555555-----");
                          String msg = "Successfully send";
                          if (!task.isSuccessful()) {
                              msg = "Send failed..!!";
+                             Log.d("Alium","Inside init [FIREBASE CODE]----66666------"+msg);
                          }
 
                     //   Toast.makeText(getContextApp(), msg, Toast.LENGTH_SHORT).show();
@@ -262,18 +283,23 @@ public class Alium {
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        Log.d("Alium","Inside init [FIREBASE CODE]----777777777777------");
                         if (!task.isSuccessful()) {
+                            Log.d("Alium","Inside init [FIREBASE CODE]-----8888888888-----");
                             Log.w("TAG", "getInstanceId failed", task.getException());
+                            Log.d("Alium","Inside init [FIREBASE CODE]------99999999----");
                             return;
                         }
 
                         // Get new Instance ID token
                        fcm = Objects.requireNonNull(task.getResult()).getToken();
+                        Log.d("Alium","Inside init [FIREBASE CODE]---10-10-10-10----");
 //                       dim.add(fcm);
 
                         // Log and toast
                         //String msg = getString(R.string.msg_token_fmt, token);
                         Log.d("FCM Tag-----------", fcm);
+                        Log.d("Alium","Inside init [FIREBASE CODE]---11-11-11-11----");
 //                        Toast.makeText(getContextApp(), fcm, Toast.LENGTH_SHORT).show();
                     }
                 });
