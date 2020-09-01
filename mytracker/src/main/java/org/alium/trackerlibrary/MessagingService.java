@@ -28,9 +28,17 @@ public class MessagingService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.d("MessagingService","Inside onMessageReceived ----------");
         super.onMessageReceived(remoteMessage);
-        Log.d("MessagingService","Inside onMessageReceived -----111111111111111-----");
-        showNotification(Objects.requireNonNull(remoteMessage.getNotification()).getTitle(),remoteMessage.getNotification().getBody());
-        Log.d("MessagingService","Inside onMessageReceived -----222222222222222-----");
+        final RemoteMessage remotesMessage = remoteMessage;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("MessagingService","Inside onMessageReceived run()-----111111111111111-----");
+                showNotification(Objects.requireNonNull(remotesMessage.getNotification()).getTitle(),remotesMessage.getNotification().getBody());
+                Log.d("MessagingService","Inside onMessageReceived -----222222222222222-----");
+            }
+        }).start();
+
 
     }
 

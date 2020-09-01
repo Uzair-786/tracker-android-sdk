@@ -53,6 +53,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.alium.trackerlibrary.init.Init;
+import org.alium.trackerlibrary.init.InitRetrofitClient;
 import org.alium.trackerlibrary.retrofit.AliumData;
 import org.alium.trackerlibrary.retrofit.RetrofitClient;
 import org.json.JSONArray;
@@ -103,12 +105,11 @@ public class Alium extends Application {
 
     public Alium (Activity context){
         this.activity = context;
-//        this.activityClass = context.getClass();
     }
 
-    public Activity getActivityClass(){
+   /* public Activity getActivityClass(){
         return activity;
-    }
+    }*/
 
     private final static String ID_TAG = "ID";
     private static String uniqueID = null;
@@ -216,7 +217,7 @@ public class Alium extends Application {
 
     }
 
-     public void init(Context context){  //Http call (Client-Id,Sdk-Id)  // run all function on success or
+     public void initMethod(Context context){  //Http call (Client-Id,Sdk-Id)  // run all function on success or
          Log.d("Alium","Inside init ----------");
          setContextApp(context);
          Log.d("Alium","Inside init -----1111111111-----");
@@ -813,6 +814,48 @@ public class Alium extends Application {
                 PackageManager.MATCH_DEFAULT_ONLY);
         return list.size() > 0;
     }
+
+    /*public void init(String sdkId, String clientId) {
+
+        try {
+
+            Init init = new Init() ;
+            JSONObject json = init.toJSON();
+
+            Log.d("JSON ::", "Json Object ---------" + json);
+
+            HashMap<String, String> headerMap = new HashMap<>();
+            headerMap.put("Content-Type", "application/json");
+
+            Call<ResponseBody> call = InitRetrofitClient
+                    .getInstance()
+                    .getApiPost()
+                    .PostData(headerMap,json);
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(!response.isSuccessful()){
+                        Log.d("Response ::", "Response is not Successful ---------" + response);
+                    }else{
+                        initMethod(context);
+                        Log.d("Response ::", "Success response---------" + response);
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    Log.d("Error ::", "Inside Throwable -------" + t);
+
+                }
+            });
+
+        }catch(Exception e){
+            Log.d("Error ::", "Inside Exception -------" + e);
+        }
+    }*/
 }
 
 

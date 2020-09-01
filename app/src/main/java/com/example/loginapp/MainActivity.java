@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), SecondActivity.class));
         }
 
+      //  alium.init("SDK-android-2kk6pcewke9i7wl4","client-2kk6pcewke9i7wl1"); //sdk-Id, Client-ID
+
         alium = new Alium(this);
         alium.onClickTracker(LoginPage);
         alium.onClickTracker(Name);
@@ -87,7 +89,8 @@ public class MainActivity extends AppCompatActivity {
         alium.onClickTracker(Info);
         alium.onClickTracker(Login);
         alium.onClickTracker(Register);
-        alium.init(this); //sdk-Id, Client-ID
+        alium.initMethod(this);
+
     }
 
 }
