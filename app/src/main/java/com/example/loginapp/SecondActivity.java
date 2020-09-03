@@ -88,7 +88,7 @@ public class SecondActivity extends AppCompatActivity {
         alium.onClickTracker(textView2);
         alium.onClickTracker(radioButtonMale);
         alium.onClickTracker(radioButtonFemale);
-        alium.initMethod(this);
+//        alium.initMethod(this);
 
     }
 }

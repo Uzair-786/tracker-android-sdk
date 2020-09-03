@@ -6,23 +6,15 @@ import org.json.JSONObject;
 
 public class Init {
 
-    private String sdkId = "";
     private String clientId = "";
+    private String sdkId = "";
 
     public Init() {
     }
 
-    public Init(String sdkId, String clientId) {
-        sdkId = sdkId;
-        clientId = clientId;
-    }
-
-    public String getSdkId() {
-        return sdkId;
-    }
-
-    public void setSdkId(String sdkId) {
-        sdkId = sdkId;
+    public Init(String clientId, String sdkId) {
+        this.clientId = clientId;
+        this.sdkId = sdkId;
     }
 
     public String getClientId() {
@@ -30,23 +22,30 @@ public class Init {
     }
 
     public void setClientId(String clientId) {
-        clientId = clientId;
+        this.clientId = clientId;
     }
 
+    public String getSdkId() {
+        return sdkId;
+    }
+
+    public void setSdkId(String sdkId) {
+        this.sdkId = sdkId;
+    }
 
     @Override
     public String toString() {
         return "Init{" +
-                "sdkId='" + sdkId + '\'' +
-                ", clientId='" + clientId + '\'' +
+                "clientId='" + clientId + '\'' +
+                ", sdkId='" + sdkId + '\'' +
                 '}';
     }
 
     public JSONObject toJSON() throws JSONException {
 
             JSONObject obj = new JSONObject();
-            obj.put("sdkId", sdkId);
             obj.put("clientId", clientId);
+            obj.put("sdkId", sdkId);
             return obj;
         }
 }

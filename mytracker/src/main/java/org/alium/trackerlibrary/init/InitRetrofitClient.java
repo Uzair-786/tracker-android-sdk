@@ -10,7 +10,7 @@ public class InitRetrofitClient {
 
     Gson gson = new GsonBuilder().setLenient().create();
 
-    private static final String BASE_URL = "https://dev-webpush.alium.co.in/";
+    private static final String BASE_URL = "https://dev-webpush.alium.co.in";
     private static InitRetrofitClient clientInstance;
     private Retrofit retrofit;
 

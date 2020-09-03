@@ -274,7 +274,6 @@ public class AliumData {
     }
 
 
-
   @Override
     public String toString() {
         return "AliumData{" +
@@ -306,7 +305,6 @@ public class AliumData {
                 '}';
     }
 
-   // Alium alium = new Alium();
 
     public JSONObject toJSON() throws JSONException {
 

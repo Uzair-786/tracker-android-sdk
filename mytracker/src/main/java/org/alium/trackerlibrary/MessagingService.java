@@ -48,7 +48,7 @@ public class MessagingService extends FirebaseMessagingService {
                 .setSmallIcon(R.drawable.common_full_open_on_phone)
                 .setContentTitle(title)
                 .setContentText(remoteMessage)
-                .setPriority(NotificationManagerCompat.IMPORTANCE_MAX)
+//                .setPriority(NotificationManagerCompat.IMPORTANCE_MAX)
                 .setAutoCancel(true)
                 .build();
         Log.d("MessagingService","Inside showNotification -----2222222222222-----");
@@ -59,5 +59,7 @@ public class MessagingService extends FirebaseMessagingService {
         Log.d("MessagingService","Inside showNotification -----4444444444444-----");
     }
 
-
+    public MessagingService() {
+        super();
+    }
 }

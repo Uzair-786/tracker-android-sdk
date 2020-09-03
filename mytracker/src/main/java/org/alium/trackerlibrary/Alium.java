@@ -49,6 +49,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -67,8 +68,10 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -253,12 +256,14 @@ public class Alium extends Application {
          ///////////////////////------------------FIREBASE CODE--------------/////////////////////////////////////////
         startPowerSaverIntent(context);
          Log.d("Alium","Inside init [FIREBASE CODE]----------");
+
+         FirebaseApp.initializeApp(context);
 //        turnOffDozeMode(context);
 
          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
              Log.d("Alium","Inside init [FIREBASE CODE]-----111111111-----");
-             NotificationChannel channel =
-                     new NotificationChannel("MyNotifications", "MyNotification", NotificationManager.IMPORTANCE_DEFAULT);
+             @SuppressLint("WrongConstant") NotificationChannel channel =
+                     new NotificationChannel("MyNotifications", "MyNotification", NotificationManager.IMPORTANCE_MAX);
              Log.d("Alium","Inside init [FIREBASE CODE]-----22222222-----");
              NotificationManager manager = getContextApp().getSystemService(NotificationManager.class);
              Log.d("Alium","Inside init [FIREBASE CODE]------3333333----");
@@ -815,47 +820,41 @@ public class Alium extends Application {
         return list.size() > 0;
     }
 
-    /*public void init(String sdkId, String clientId) {
+    public void init(String clientId, String sdkId, final Context contexts) {
 
         try {
 
-            Init init = new Init() ;
-            JSONObject json = init.toJSON();
+            Init initObject = new Init(clientId,sdkId) ;
 
-            Log.d("JSON ::", "Json Object ---------" + json);
+            Log.d("JSON ::", "Json Object ---------" + initObject.toString());
 
-            HashMap<String, String> headerMap = new HashMap<>();
-            headerMap.put("Content-Type", "application/json");
-
-            Call<ResponseBody> call = InitRetrofitClient
+            Call<Init> call = InitRetrofitClient
                     .getInstance()
                     .getApiPost()
-                    .PostData(headerMap,json);
+                    .PostData(initObject);
 
-            call.enqueue(new Callback<ResponseBody>() {
+            call.enqueue(new Callback<Init>() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onResponse(Call<Init> call, Response<Init> response) {
                     if(!response.isSuccessful()){
                         Log.d("Response ::", "Response is not Successful ---------" + response);
                     }else{
-                        initMethod(context);
                         Log.d("Response ::", "Success response---------" + response);
+                        initMethod(contexts);
                     }
-
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                public void onFailure(Call<Init> call, Throwable t) {
                     Log.d("Error ::", "Inside Throwable -------" + t);
-
                 }
             });
+
 
         }catch(Exception e){
             Log.d("Error ::", "Inside Exception -------" + e);
         }
-    }*/
+    }
 }
 
 
