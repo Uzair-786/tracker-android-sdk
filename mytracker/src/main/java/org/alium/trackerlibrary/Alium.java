@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,12 +17,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.PowerManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
@@ -31,9 +27,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -50,12 +44,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.alium.trackerlibrary.init.Init;
 import org.alium.trackerlibrary.init.InitRetrofitClient;
+import org.alium.trackerlibrary.init.data.ResponseClass;
 import org.alium.trackerlibrary.retrofit.AliumData;
 import org.alium.trackerlibrary.retrofit.RetrofitClient;
 import org.json.JSONArray;
@@ -68,11 +64,8 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -110,10 +103,6 @@ public class Alium extends Application {
         this.activity = context;
     }
 
-   /* public Activity getActivityClass(){
-        return activity;
-    }*/
-
     private final static String ID_TAG = "ID";
     private static String uniqueID = null;
     private static final String PREF_UNIQUE_ID = "PREF_UNIQUE_ID";
@@ -131,8 +120,12 @@ public class Alium extends Application {
     private static final String TAGS = "Trackers ";
     int counter = 0;
     static Map<String,Integer> map =new HashMap();
+    ArrayList<HashMap<String,String>> dims =new  ArrayList<>();
 
-    private ArrayList<String> dim = new ArrayList<>() ;               //Element on which action is done. {"", "button", "FCM Token", "×"}
+    static HashMap<String,String> dimMapping =new HashMap();
+
+//    private ArrayList<String> dim = new ArrayList<>() ;               //Element on which action is done. {"", "button", "FCM Token", "×"}
+    private ArrayList<String> dim =new  ArrayList<>();
     private String did = "";                                          //device_id || android_id
     private String bvrs = "";                                         //build_version
     private String pth = ""; //"com.example.loginapp.MainActivity";         //screen/path/route
@@ -156,9 +149,7 @@ public class Alium extends Application {
     private Long tz = 0L;                                             //timezone
     private String evnt = "click";                                    //event_name
     private String fcm = "";                                          //FCM token
-    private String platform = "Android";                              //Default Lead Message always -> "Android"
-
-
+    private String platform = "ANDROID";                              //Default Lead Message always -> "Android"
 
     ///////////// Tracker Method //////////////////
 
@@ -174,7 +165,7 @@ public class Alium extends Application {
                     String viewName = view.getResources().getResourceEntryName(view.getId());
                     Log.d(TAGS, "Item clicked :(name):(" + viewName + ")");
 
-                    clickCounter(viewName,counter);
+//                    clickCounter(viewName,counter);
 
                     String widgetName = view.getAccessibilityClassName().toString();
                     String[] className = widgetName.split("\\.");
@@ -183,6 +174,43 @@ public class Alium extends Application {
                     if(viewName.equals("btnLogin")){
                         postData();
                     }
+
+                    dimMapping = dims.get(0);
+                    dimMapping.replace("dimAction",viewName);
+                    dim.add(0,dimMapping.get("dimAction"));
+                    Log.d(TAGS, "Dim Mapping -----1111------" + dimMapping );
+
+                    dimMapping = dims.get(1);
+                    dimMapping.replace("displayName","widgetName");
+                    dimMapping.replace("dimAction",className[2]);
+                    dim.add(1,dimMapping.get("displayName"));
+                    dim.add(2,dimMapping.get("dimAction"));
+                    Log.d(TAGS, "Dim Mapping -----2222------" + dimMapping );
+
+                    dimMapping = dims.get(2);
+                    dimMapping.replace("displayName",Build.DEVICE);
+                    dimMapping.replace("dimAction","Android");
+                    dim.add(3,dimMapping.get("displayName"));
+                    dim.add(4,dimMapping.get("dimAction"));
+                    Log.d(TAGS, "Dim Mapping -----3333------" + dimMapping );
+
+                    dimMapping = dims.get(3);
+                    dimMapping.replace("displayName","4000");
+                    dimMapping.replace("dimAction","click");
+                    dim.add(5,dimMapping.get("displayName"));
+                    dim.add(6,dimMapping.get("dimAction"));
+                    Log.d(TAGS, "Dim Mapping -----4444------" + dimMapping );
+
+                    dimMapping = dims.get(4);
+                    dimMapping.replace("displayName",className[2]);
+                    dimMapping.replace("dimAction","click");
+                    dim.add(7,dimMapping.get("displayName"));
+                    dim.add(8,dimMapping.get("dimAction"));
+//                    dim.add(4,dimMapping);
+                    Log.d(TAGS, "Dim Mapping -----5555------" + dimMapping );
+
+                    Log.d(TAGS, "Dim Mapping -----------" + dim);
+
                    /* if(className[2].equals("Button")){
                         postData();
                     }*/
@@ -196,7 +224,7 @@ public class Alium extends Application {
 
     }
 
-    public void clickCounter(String viewName,Integer counter){
+   /* public void clickCounter(String viewName,Integer counter){
 
         if(!map.containsKey(viewName)){
             map.put(viewName,counter);
@@ -218,7 +246,7 @@ public class Alium extends Application {
 
         Log.d(TAGS, "Map of Touched Items : (v): ("+map+")");
 
-    }
+    }*/
 
      public void initMethod(Context context){  //Http call (Client-Id,Sdk-Id)  // run all function on success or
          Log.d("Alium","Inside init ----------");
@@ -257,7 +285,21 @@ public class Alium extends Application {
         startPowerSaverIntent(context);
          Log.d("Alium","Inside init [FIREBASE CODE]----------");
 
-         FirebaseApp.initializeApp(context);
+         // Retrieve my other app.
+//         FirebaseApp app = FirebaseApp.getInstance("secondary");
+         FirebaseOptions options = new FirebaseOptions.Builder()
+                 .setApiKey("AIzaSyBU-S6u7wusyywPxb7f3WScKlkVtK_Fwvo")
+                 .setProjectId("org.alium.trackerlibrary")
+                 .setApplicationId("1:559777811749:android:10b753bf4b2b8484aa5ecc")
+                 .setDatabaseUrl("https://alium-ee7c7.firebaseio.com")
+                 .setStorageBucket("alium-ee7c7.appspot.com")
+                 .build();
+
+         FirebaseApp.initializeApp(context, options, "secondary");
+        // Get the database for the other app.
+         //FirebaseMessaging secondaryDatabase = FirebaseMessaging.getInstance(); //getInstance(app);
+
+//         FirebaseApp.initializeApp(context);
 //        turnOffDozeMode(context);
 
          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -310,7 +352,8 @@ public class Alium extends Application {
 //                        Toast.makeText(getContextApp(), fcm, Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
+
+     }
 
 //    @SuppressLint("NewApi")
     @SuppressLint("HardwareIds")
@@ -687,6 +730,7 @@ public class Alium extends Application {
         JSONArray dimJsonArray = new JSONArray(dim);
         JSONArray glocJsonArray = new JSONArray(gloc);
         AliumData aliumData = new AliumData(dimJsonArray,did,bvrs,pth,scrnsz,orgs,glocJsonArray,st,ct,ctry,rgn,ntwp,ssn,tsls,aId,aitd,hnm,uia,vstid,ua,cmp,tz,evnt,fcm,platform) ;
+        dim.clear();
         JSONObject json = aliumData.toJSON();
 
         Log.d("JSON ::", "Json Object ---------" + json);
@@ -828,24 +872,27 @@ public class Alium extends Application {
 
             Log.d("JSON ::", "Json Object ---------" + initObject.toString());
 
-            Call<Init> call = InitRetrofitClient
+            Call<ResponseClass> call = InitRetrofitClient
                     .getInstance()
                     .getApiPost()
                     .PostData(initObject);
 
-            call.enqueue(new Callback<Init>() {
+            call.enqueue(new Callback<ResponseClass>() {
                 @Override
-                public void onResponse(Call<Init> call, Response<Init> response) {
+                public void onResponse(Call<ResponseClass> call, Response<ResponseClass> response) {
                     if(!response.isSuccessful()){
-                        Log.d("Response ::", "Response is not Successful ---------" + response);
+                        Log.d("Response ::", "Response is not Successful (init)---------" + response.body());
                     }else{
-                        Log.d("Response ::", "Success response---------" + response);
+
+                        dims =   response.body().getData().getDims().getDims();
+                        Log.d("Response ::", "Dims Data (init)---------" + dims);
+                        Log.d("Response ::", "Success response (init)---------" + response);
                         initMethod(contexts);
                     }
                 }
 
                 @Override
-                public void onFailure(Call<Init> call, Throwable t) {
+                public void onFailure(Call<ResponseClass> call, Throwable t) {
                     Log.d("Error ::", "Inside Throwable -------" + t);
                 }
             });

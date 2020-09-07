@@ -1,6 +1,6 @@
 package org.alium.trackerlibrary.init;
 
-
+import org.alium.trackerlibrary.init.data.Dims;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,6 +8,7 @@ public class Init {
 
     private String clientId = "";
     private String sdkId = "";
+    private Dims dims ;
 
     public Init() {
     }
@@ -31,6 +32,14 @@ public class Init {
 
     public void setSdkId(String sdkId) {
         this.sdkId = sdkId;
+    }
+
+    public Dims getDims() {
+        return dims;
+    }
+
+    public void setDims(Dims dims) {
+        this.dims = dims;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.alium.trackerlibrary.init;
 
+import org.alium.trackerlibrary.init.data.ResponseClass;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -17,7 +18,6 @@ public interface InitPostApi {
 //    @Headers("Content-Length: 1439")
 //    @Headers("Host: https://dev-webpush.alium.co.in")
     @POST("/node/api/dashboard/auth/init-client")
-    Call<Init> PostData(@Body Init jsonObject);
+    Call<ResponseClass> PostData(@Body Init jsonObject);
 
-//    @HeaderMap Map<String, String> headers,
 }
