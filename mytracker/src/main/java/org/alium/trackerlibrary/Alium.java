@@ -289,7 +289,7 @@ public class Alium extends Application {
 //         FirebaseApp app = FirebaseApp.getInstance("secondary");
          FirebaseOptions options = new FirebaseOptions.Builder()
                  .setApiKey("AIzaSyBU-S6u7wusyywPxb7f3WScKlkVtK_Fwvo")
-                 .setProjectId("org.alium.trackerlibrary")
+                 .setProjectId("alium-ee7c7")
                  .setApplicationId("1:559777811749:android:10b753bf4b2b8484aa5ecc")
                  .setDatabaseUrl("https://alium-ee7c7.firebaseio.com")
                  .setStorageBucket("alium-ee7c7.appspot.com")
