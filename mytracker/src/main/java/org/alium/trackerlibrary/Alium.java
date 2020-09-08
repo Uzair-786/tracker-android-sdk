@@ -175,41 +175,48 @@ public class Alium extends Application {
                         postData();
                     }
 
-                    dimMapping = dims.get(0);
-                    dimMapping.replace("dimAction",viewName);
-                    dim.add(0,dimMapping.get("dimAction"));
-                    Log.d(TAGS, "Dim Mapping -----1111------" + dimMapping );
+                    try {
 
-                    dimMapping = dims.get(1);
-                    dimMapping.replace("displayName","widgetName");
-                    dimMapping.replace("dimAction",className[2]);
-                    dim.add(1,dimMapping.get("displayName"));
-                    dim.add(2,dimMapping.get("dimAction"));
-                    Log.d(TAGS, "Dim Mapping -----2222------" + dimMapping );
+                        dimMapping = dims.get(0);
+                        dimMapping.replace("dimAction", viewName);
+                        dim.add(0, dimMapping.get("dimAction"));
+                        Log.d(TAGS, "Dim Mapping -----1111------" + dimMapping);
 
-                    dimMapping = dims.get(2);
-                    dimMapping.replace("displayName",Build.DEVICE);
-                    dimMapping.replace("dimAction","Android");
-                    dim.add(3,dimMapping.get("displayName"));
-                    dim.add(4,dimMapping.get("dimAction"));
-                    Log.d(TAGS, "Dim Mapping -----3333------" + dimMapping );
+                        dimMapping = dims.get(1);
+                        dimMapping.replace("displayName", "widgetName");
+                        dimMapping.replace("dimAction", className[2]);
+                        dim.add(1, dimMapping.get("displayName"));
+                        dim.add(2, dimMapping.get("dimAction"));
+                        Log.d(TAGS, "Dim Mapping -----2222------" + dimMapping);
 
-                    dimMapping = dims.get(3);
-                    dimMapping.replace("displayName","4000");
-                    dimMapping.replace("dimAction","click");
-                    dim.add(5,dimMapping.get("displayName"));
-                    dim.add(6,dimMapping.get("dimAction"));
-                    Log.d(TAGS, "Dim Mapping -----4444------" + dimMapping );
+                        dimMapping = dims.get(2);
+                        dimMapping.replace("displayName", Build.DEVICE);
+                        dimMapping.replace("dimAction", "Android");
+                        dim.add(3, dimMapping.get("displayName"));
+                        dim.add(4, dimMapping.get("dimAction"));
+                        Log.d(TAGS, "Dim Mapping -----3333------" + dimMapping);
 
-                    dimMapping = dims.get(4);
-                    dimMapping.replace("displayName",className[2]);
-                    dimMapping.replace("dimAction","click");
-                    dim.add(7,dimMapping.get("displayName"));
-                    dim.add(8,dimMapping.get("dimAction"));
+                        dimMapping = dims.get(3);
+                        dimMapping.replace("displayName", "4000");
+                        dimMapping.replace("dimAction", "click");
+                        dim.add(5, dimMapping.get("displayName"));
+                        dim.add(6, dimMapping.get("dimAction"));
+                        Log.d(TAGS, "Dim Mapping -----4444------" + dimMapping);
+
+                        dimMapping = dims.get(4);
+                        dimMapping.replace("displayName", className[2]);
+                        dimMapping.replace("dimAction", "click");
+                        dim.add(7, dimMapping.get("displayName"));
+                        dim.add(8, dimMapping.get("dimAction"));
 //                    dim.add(4,dimMapping);
-                    Log.d(TAGS, "Dim Mapping -----5555------" + dimMapping );
+                        Log.d(TAGS, "Dim Mapping -----5555------" + dimMapping);
 
-                    Log.d(TAGS, "Dim Mapping -----------" + dim);
+                        Log.d(TAGS, "Dim Mapping -----------" + dim);
+
+                    }catch(Exception e){
+                        Log.d("Exception :: ", String.valueOf(e));
+                    }
+
 
                    /* if(className[2].equals("Button")){
                         postData();
