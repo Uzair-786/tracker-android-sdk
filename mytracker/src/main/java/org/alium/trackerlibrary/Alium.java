@@ -287,7 +287,7 @@ public class Alium extends Application {
 
          // Retrieve my other app.
 //         FirebaseApp app = FirebaseApp.getInstance("secondary");
-         FirebaseOptions options = new FirebaseOptions.Builder()
+        /* FirebaseOptions options = new FirebaseOptions.Builder()
                  .setApiKey("AIzaSyBU-S6u7wusyywPxb7f3WScKlkVtK_Fwvo")
                  .setProjectId("alium-ee7c7")
                  .setApplicationId("1:559777811749:android:10b753bf4b2b8484aa5ecc")
@@ -295,7 +295,7 @@ public class Alium extends Application {
                  .setStorageBucket("alium-ee7c7.appspot.com")
                  .build();
 
-         FirebaseApp.initializeApp(context, options, "secondary");
+         FirebaseApp.initializeApp(context, options, "secondary");*/
         // Get the database for the other app.
          //FirebaseMessaging secondaryDatabase = FirebaseMessaging.getInstance(); //getInstance(app);
 
